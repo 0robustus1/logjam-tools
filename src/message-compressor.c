@@ -82,30 +82,31 @@ void handle_compressor_request(zmsg_t *msg, compressor_state_t *state)
     zmsg_next(msg);
     zframe_t *body_frame = zmsg_next(msg);
     zframe_t *meta_frame = zmsg_next(msg);
-    msg_meta_t *meta = (msg_meta_t*) zframe_data(meta_frame);
+    msg_meta_t meta;
+    frame_extract_meta_info(meta_frame, &meta);
 
     void *data = zframe_data(body_frame);
     size_t data_len = zframe_size(body_frame);
 
     // my_zmsg_fprint(msg, "COMPRESSED", stdout);
-    // dump_meta_info_network_format(meta);
+    // dump_meta_info_network_format(&meta);
 
     if (state->decompress) {
         size_t new_body_len;
         char* new_body;
-        int rc = decompress_frame(body_frame, meta->compression_method, state->compression_buffer, &new_body, &new_body_len);
+        int rc = decompress_frame(body_frame, meta.compression_method, state->compression_buffer, &new_body, &new_body_len);
         if (!rc) {
             char *app_env = (char*) zframe_data(stream_frame);
             int n = zframe_size(stream_frame);
-            const char *method_name = compression_method_to_string(meta->compression_method);
+            const char *method_name = compression_method_to_string(meta.compression_method);
             fprintf(stderr, "[E] decompressor: could not decompress payload from %.*s (%s)\n", n, app_env, method_name);
-            dump_meta_info("[E]", meta);
+            dump_meta_info("[E]", &meta);
             my_zmsg_fprint(msg, "[E] FRAME=", stderr);
 
         } else {
             // printf("UNCOMPRESSED[%zu] %.*s\n", new_body_len, (int)new_body_len, new_body);
             zframe_reset(body_frame, new_body, new_body_len);
-            meta->compression_method = NO_COMPRESSION;
+            meta.compression_method = NO_COMPRESSION;
         }
     } else {
         zmq_msg_t new_body;
@@ -113,7 +114,7 @@ void handle_compressor_request(zmsg_t *msg, compressor_state_t *state)
         compress_message_data(state->compression_method, state->compression_buffer, &new_body, data, data_len);
         zframe_reset(body_frame, zmq_msg_data(&new_body), zmq_msg_size(&new_body));
         zmq_msg_close(&new_body);
-        meta->compression_method = state->compression_method;
+        meta.compression_method = state->compression_method;
     }
 
     zmsg_send(&msg, state->push_socket);
