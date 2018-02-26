@@ -129,7 +129,7 @@ function handle_sodium()
     test -f $f || wget -nv https://github.com/jedisct1/libsodium/releases/download/1.0.11/$f
     test -d $d || tar xzvf $f
     cd $d
-    [ $forced == "1" ] && rm -f config.status && git clean -fqdx
+    [ $forced == "1" ] && rm -f config.status
     test -f config.status || ./configure --prefix=$prefix
     make -j4
     $LSUDO make $cmd
