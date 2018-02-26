@@ -139,7 +139,7 @@ function handle_sodium()
 
 function handle_zeromq()
 {
-    d=zeromq4-1
+    d=libzmq
     test -d $d || git clone https://github.com/skaes/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
