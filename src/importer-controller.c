@@ -507,6 +507,8 @@ int run_controller_loop(zconfig_t* config, size_t io_threads)
     if (verbose)
         printf("[D] io-threads: %lu\n", io_threads);
     zsys_set_io_threads(io_threads);
+    // do not use zero copy in the importer
+    zsys_set_zero_copy(0);
 
     zsys_set_rcvhwm(1000);
     zsys_set_sndhwm(1000);
