@@ -203,6 +203,7 @@ int main(int argc, char * const *argv)
     zsys_set_pipehwm(1000);
     zsys_set_linger(100);
     zsys_set_io_threads(io_threads);
+    zsys_set_zero_copy(0);
 
     // create socket to receive messages on
     zsock_t *receiver = zsock_new(ZMQ_SUB);

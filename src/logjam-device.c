@@ -481,6 +481,7 @@ int main(int argc, char * const *argv)
     zsys_set_pipehwm(1000);
     zsys_set_linger(100);
     zsys_set_io_threads(io_threads);
+    zsys_set_zero_copy(0);
 
     compression_buffer = zchunk_new(NULL, INITIAL_COMPRESSION_BUFFER_SIZE);
 

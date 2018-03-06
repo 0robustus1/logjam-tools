@@ -68,6 +68,7 @@ int graylog_forwarder_run_controller_loop(zconfig_t* config, zlist_t* devices, z
     set_thread_name("controller");
 
     zsys_init();
+    zsys_set_zero_copy(0);
 
     controller_state_t state = {.config = config};
     bool start_up_complete = controller_create_actors(&state, devices, subscriptions, rcv_hwm, send_hwm);

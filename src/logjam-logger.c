@@ -245,6 +245,7 @@ int main(int argc, char * const *argv)
     zsys_set_pipehwm(1000);
     zsys_set_linger(100);
     zsys_set_io_threads(io_threads);
+    zsys_set_zero_copy(0);
 
     // create socket to publish messages on
     zsock_t *sender = zsock_new(ZMQ_PUB);
