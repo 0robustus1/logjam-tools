@@ -130,9 +130,10 @@ void rabbitmq_add_queue(amqp_connection_state_t conn, amqp_channel_t* channel_re
 {
     size_t n = strlen(stream) + 1;
     char app[n], env[n];
-    memset(app, 0, n);
-    memset(env, 0, n);
-    sscanf(stream, "%[^-]-%[^-]", app, env);
+    if (!extract_app_env(stream, n, app, env)) {
+        printf("[E] ignoring invalid stream: %s\n", stream);
+        return;
+    }
     if (strcmp(env, rabbit_env)) {
         printf("[I] skipping: %s-%s\n", app, env);
         return;

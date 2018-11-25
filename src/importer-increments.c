@@ -262,7 +262,7 @@ void increments_fill_caller_info(increments_t *increments, json_object *request)
             if (caller_id == NULL || *caller_id == '\0') return;
             size_t n = strlen(caller_id) + 1;
             char app[n], env[n], rid[n];
-            if (3 == sscanf(caller_id, "%[^-]-%[^-]-%[^-]", app, env, rid)) {
+            if (extract_app_env_rid(caller_id, n, app, env, rid)) {
                 size_t app_len = strlen(app) + 1;
                 size_t action_len = strlen(caller_action) + 1;
                 char caller_name[4*(app_len + action_len) + 2 + 8];
@@ -289,7 +289,7 @@ void increments_fill_sender_info(increments_t *increments, json_object *request)
             if (sender_id == NULL || *sender_id == '\0') return;
             size_t n = strlen(sender_id) + 1;
             char app[n], env[n], rid[n];
-            if (3 == sscanf(sender_id, "%[^-]-%[^-]-%[^-]", app, env, rid)) {
+            if (extract_app_env_rid(sender_id, n, app, env, rid)) {
                 size_t app_len = strlen(app) + 1;
                 size_t action_len = strlen(sender_action) + 1;
                 char sender_name[4*(app_len + action_len) + 2 + 8];
